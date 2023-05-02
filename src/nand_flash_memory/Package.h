@@ -9,11 +9,11 @@ typedef struct PageData {
 class PackageComponent {
  public:
   PackageComponent(uint32_t id);
-  virtual PageData ReadPage(uint64_t ppa) = 0;
+  virtual PageData ReadPage(uint64_t ppa) const = 0;
   virtual void WritePage(uint64_t ppa, PageData page_data) = 0;
   virtual ~PackageComponent() = default;
 
-  uint32_t getID() { return id; }
+  uint32_t getID() const { return id; }
 
  protected:
   std::vector<std::unique_ptr<PackageComponent>> childs;
@@ -25,7 +25,7 @@ class PackageComponent {
 class Page : public PackageComponent {
  public:
   Page(uint32_t id);
-  PageData ReadPage(uint64_t ppa) override;
+  PageData ReadPage(uint64_t ppa) const override;
   void WritePage(uint64_t ppa, PageData page_data) override;
   ~Page() = default;
 
@@ -36,7 +36,7 @@ class Page : public PackageComponent {
 class Block : public PackageComponent {
  public:
   Block(uint32_t id, int num_pages);
-  PageData ReadPage(uint64_t ppa) override;
+  PageData ReadPage(uint64_t ppa) const override;
   void WritePage(uint64_t ppa, PageData page_data) override;
   ~Block() = default;
 };
@@ -44,7 +44,7 @@ class Block : public PackageComponent {
 class Plane : public PackageComponent {
  public:
   Plane(uint32_t id, int num_blocks, int num_pages);
-  PageData ReadPage(uint64_t ppa) override;
+  PageData ReadPage(uint64_t ppa) const override;
   void WritePage(uint64_t ppa, PageData page_data) override;
   ~Plane() = default;
 };
@@ -52,7 +52,7 @@ class Plane : public PackageComponent {
 class Die : public PackageComponent {
  public:
   Die(uint32_t id, int num_planes, int num_blocks, int num_pages);
-  PageData ReadPage(uint64_t ppa) override;
+  PageData ReadPage(uint64_t ppa) const override;
   void WritePage(uint64_t ppa, PageData page_data) override;
   ~Die() = default;
 };
@@ -61,7 +61,7 @@ class Package : public PackageComponent {
  public:
   Package(uint32_t id, int num_dies, int num_planes, int num_blocks,
           int num_pages);
-  PageData ReadPage(uint64_t ppa) override;
+  PageData ReadPage(uint64_t ppa) const override;
   void WritePage(uint64_t ppa, PageData page_data) override;
   ~Package() = default;
 };

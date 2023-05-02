@@ -8,7 +8,7 @@ PackageComponent::PackageComponent(uint32_t id) : id(id) {}
 
 Page::Page(uint32_t id) : PackageComponent(id) {}
 
-PageData Page::ReadPage(uint64_t ppa) {
+PageData Page::ReadPage(uint64_t ppa) const {
   // auto pageID;
   // assert(pageID == getID());
   return page_data_;
@@ -26,7 +26,9 @@ Block::Block(uint32_t id, int num_pages) : PackageComponent(id) {
   }
 }
 
-PageData Block::ReadPage(uint64_t ppa) { return childs[0]->ReadPage(ppa); }
+PageData Block::ReadPage(uint64_t ppa) const {
+  return childs[0]->ReadPage(ppa);
+}
 
 void Block::WritePage(uint64_t ppa, PageData page_data) {
   childs[0]->WritePage(ppa, page_data);
@@ -39,7 +41,9 @@ Plane::Plane(uint32_t id, int num_blocks, int num_pages)
   }
 }
 
-PageData Plane::ReadPage(uint64_t ppa) { return childs[0]->ReadPage(ppa); }
+PageData Plane::ReadPage(uint64_t ppa) const {
+  return childs[0]->ReadPage(ppa);
+}
 
 void Plane::WritePage(uint64_t ppa, PageData page_data) {
   childs[0]->WritePage(ppa, page_data);
@@ -52,7 +56,7 @@ Die::Die(uint32_t id, int num_planes, int num_blocks, int num_pages)
   }
 }
 
-PageData Die::ReadPage(uint64_t ppa) { return childs[0]->ReadPage(ppa); }
+PageData Die::ReadPage(uint64_t ppa) const { return childs[0]->ReadPage(ppa); }
 
 void Die::WritePage(uint64_t ppa, PageData page_data) {
   childs[0]->WritePage(ppa, page_data);
@@ -67,7 +71,9 @@ Package::Package(uint32_t id, int num_dies, int num_planes, int num_blocks,
   }
 }
 
-PageData Package::ReadPage(uint64_t ppa) { return childs[0]->ReadPage(ppa); }
+PageData Package::ReadPage(uint64_t ppa) const {
+  return childs[0]->ReadPage(ppa);
+}
 
 void Package::WritePage(uint64_t ppa, PageData page_data) {
   childs[0]->WritePage(ppa, page_data);
