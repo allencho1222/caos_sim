@@ -1,8 +1,8 @@
+#include "Package.h"
+
 #include <cassert>
 #include <memory>
 #include <vector>
-
-#include "Package.h"
 
 PackageComponent::PackageComponent(uint32_t id) : id(id) {}
 

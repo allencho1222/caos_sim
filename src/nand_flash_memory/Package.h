@@ -7,7 +7,7 @@ typedef struct PackageData {
 } PackageData;
 
 class PackageComponent {
-public:
+ public:
   PackageComponent(uint32_t id);
   virtual PackageData readPackageData(uint64_t ppa) = 0;
   virtual void writePackageData(uint64_t ppa, PackageData pkgData) = 0;
@@ -15,26 +15,26 @@ public:
 
   uint32_t getID() { return id; }
 
-protected:
+ protected:
   std::vector<std::unique_ptr<PackageComponent>> childs;
 
-private:
+ private:
   uint32_t id;
 };
 
 class Page : public PackageComponent {
-public:
+ public:
   Page(uint32_t id);
   PackageData readPackageData(uint64_t ppa) override;
   void writePackageData(uint64_t ppa, PackageData pkgData) override;
   ~Page() = default;
 
-private:
+ private:
   PackageData packageData;
 };
 
 class Block : public PackageComponent {
-public:
+ public:
   Block(uint32_t id, int numPages);
   PackageData readPackageData(uint64_t ppa) override;
   void writePackageData(uint64_t ppa, PackageData pkgData) override;
@@ -42,7 +42,7 @@ public:
 };
 
 class Plane : public PackageComponent {
-public:
+ public:
   Plane(uint32_t id, int numBlocks, int numPages);
   PackageData readPackageData(uint64_t ppa) override;
   void writePackageData(uint64_t ppa, PackageData pkgData) override;
@@ -50,7 +50,7 @@ public:
 };
 
 class Die : public PackageComponent {
-public:
+ public:
   Die(uint32_t id, int numPlanes, int numBlocks, int numPages);
   PackageData readPackageData(uint64_t ppa) override;
   void writePackageData(uint64_t ppa, PackageData pkgData) override;
@@ -58,7 +58,7 @@ public:
 };
 
 class Package : public PackageComponent {
-public:
+ public:
   Package(uint32_t id, int numDies, int numPlanes, int numBlocks, int numPages);
   PackageData readPackageData(uint64_t ppa) override;
   void writePackageData(uint64_t ppa, PackageData pkgData) override;
@@ -66,9 +66,10 @@ public:
 };
 
 class FlashMemory {
-public:
+ public:
   FlashMemory(int numPkgs, int numDies, int numPlanes, int numBlocks,
               int numPages);
-private:
+
+ private:
   std::vector<std::unique_ptr<PackageComponent>> pkgs;
 };
