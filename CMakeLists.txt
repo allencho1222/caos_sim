@@ -8,6 +8,8 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 #add_definitions(-DSPDLOG_ACTIVE_LEVEL=SPDLOG_LEVEL_TRACE)
 
 # Build ssdsim binary
-# add_subdirectory(src)
+add_subdirectory(src)
+
 # Build test binaries
+set(INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/src)
 add_subdirectory(test)
