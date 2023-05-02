@@ -7,7 +7,10 @@ project(nand_flash_memory)
 # find_package(cxxopts REQUIRED)
 # find_package(unordered_dense REQUIRED)
 
-set(NAND_FLASH_MEMORY_SRC_FILES Package.cpp)
+set(NAND_FLASH_MEMORY_SRC_FILES
+ Package.cpp
+ NANDFlashCommand.cpp
+) 
 add_library(nand_flash_memory ${NAND_FLASH_MEMORY_SRC_FILES})
 # target_include_directories(ssdsim)
 # target_link_libraries(ssdsim
