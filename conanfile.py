@@ -7,13 +7,6 @@ class MQSim(ConanFile):
     build_policy = "missing"
 
     def validate(self):
-        if self.settings.compiler != "gcc":
-            raise ConanInvalidConfiguration("Require GCC")
-        versions = ['11', '12']
-        if not self.settings.compiler.version in versions:
-            raise ConanInvalidConfiguration("Use GCC version >= 11")
-        if self.settings.compiler.libcxx != "libstdc++11":
-            raise ConanInvalidConfiguration("Require libstdc++11")
         gnus = ["gnu11", "gnu14", "gnu17", "gnu20"]
         if not self.settings.compiler.cppstd in gnus:
             raise ConanInvalidConfiguration("Require cpp standard above 11 (e.g., gnu11")
