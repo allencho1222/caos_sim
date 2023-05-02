@@ -1,16 +1,16 @@
 #include <memory>
 #include <vector>
 
-typedef struct PackageData {
+typedef struct PageData {
   uint64_t userData;
   uint64_t oob;
-} PackageData;
+} PageData;
 
 class PackageComponent {
  public:
   PackageComponent(uint32_t id);
-  virtual PackageData readPackageData(uint64_t ppa) = 0;
-  virtual void writePackageData(uint64_t ppa, PackageData pkgData) = 0;
+  virtual PageData ReadPage(uint64_t ppa) = 0;
+  virtual void WritePage(uint64_t ppa, PageData page_data) = 0;
   virtual ~PackageComponent() = default;
 
   uint32_t getID() { return id; }
@@ -25,50 +25,51 @@ class PackageComponent {
 class Page : public PackageComponent {
  public:
   Page(uint32_t id);
-  PackageData readPackageData(uint64_t ppa) override;
-  void writePackageData(uint64_t ppa, PackageData pkgData) override;
+  PageData ReadPage(uint64_t ppa) override;
+  void WritePage(uint64_t ppa, PageData page_data) override;
   ~Page() = default;
 
  private:
-  PackageData packageData;
+  PageData page_data_;
 };
 
 class Block : public PackageComponent {
  public:
-  Block(uint32_t id, int numPages);
-  PackageData readPackageData(uint64_t ppa) override;
-  void writePackageData(uint64_t ppa, PackageData pkgData) override;
+  Block(uint32_t id, int num_pages);
+  PageData ReadPage(uint64_t ppa) override;
+  void WritePage(uint64_t ppa, PageData page_data) override;
   ~Block() = default;
 };
 
 class Plane : public PackageComponent {
  public:
-  Plane(uint32_t id, int numBlocks, int numPages);
-  PackageData readPackageData(uint64_t ppa) override;
-  void writePackageData(uint64_t ppa, PackageData pkgData) override;
+  Plane(uint32_t id, int num_blocks, int num_pages);
+  PageData ReadPage(uint64_t ppa) override;
+  void WritePage(uint64_t ppa, PageData page_data) override;
   ~Plane() = default;
 };
 
 class Die : public PackageComponent {
  public:
-  Die(uint32_t id, int numPlanes, int numBlocks, int numPages);
-  PackageData readPackageData(uint64_t ppa) override;
-  void writePackageData(uint64_t ppa, PackageData pkgData) override;
+  Die(uint32_t id, int num_planes, int num_blocks, int num_pages);
+  PageData ReadPage(uint64_t ppa) override;
+  void WritePage(uint64_t ppa, PageData page_data) override;
   ~Die() = default;
 };
 
 class Package : public PackageComponent {
  public:
-  Package(uint32_t id, int numDies, int numPlanes, int numBlocks, int numPages);
-  PackageData readPackageData(uint64_t ppa) override;
-  void writePackageData(uint64_t ppa, PackageData pkgData) override;
+  Package(uint32_t id, int num_dies, int num_planes, int num_blocks,
+          int num_pages);
+  PageData ReadPage(uint64_t ppa) override;
+  void WritePage(uint64_t ppa, PageData page_data) override;
   ~Package() = default;
 };
 
 class FlashMemory {
  public:
-  FlashMemory(int numPkgs, int numDies, int numPlanes, int numBlocks,
-              int numPages);
+  FlashMemory(int num_pkgs, int num_dies, int num_planes, int num_blocks,
+              int num_pages);
 
  private:
   std::vector<std::unique_ptr<PackageComponent>> pkgs;

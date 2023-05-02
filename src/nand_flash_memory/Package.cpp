@@ -8,81 +8,75 @@ PackageComponent::PackageComponent(uint32_t id) : id(id) {}
 
 Page::Page(uint32_t id) : PackageComponent(id) {}
 
-PackageData Page::readPackageData(uint64_t ppa) {
+PageData Page::ReadPage(uint64_t ppa) {
   // auto pageID;
   // assert(pageID == getID());
-  return packageData;
+  return page_data_;
 }
 
-void Page::writePackageData(uint64_t ppa, PackageData pkgData) {
+void Page::WritePage(uint64_t ppa, PageData page_data) {
   // auto pageID;
   // assert(pageID == getID());
-  packageData = pkgData;
+  page_data_ = page_data;
 }
 
-Block::Block(uint32_t id, int numPages) : PackageComponent(id) {
-  for (int p = 0; p < numPages; ++p) {
+Block::Block(uint32_t id, int num_pages) : PackageComponent(id) {
+  for (int p = 0; p < num_pages; ++p) {
     childs.push_back(std::make_unique<Page>(p));
   }
 }
 
-PackageData Block::readPackageData(uint64_t ppa) {
-  return childs[0]->readPackageData(ppa);
+PageData Block::ReadPage(uint64_t ppa) { return childs[0]->ReadPage(ppa); }
+
+void Block::WritePage(uint64_t ppa, PageData page_data) {
+  childs[0]->WritePage(ppa, page_data);
 }
 
-void Block::writePackageData(uint64_t ppa, PackageData pkgData) {
-  childs[0]->writePackageData(ppa, pkgData);
-}
-
-Plane::Plane(uint32_t id, int numBlocks, int numPages) : PackageComponent(id) {
-  for (int b = 0; b < numBlocks; ++b) {
-    childs.push_back(std::make_unique<Block>(b, numPages));
-  }
-}
-
-PackageData Plane::readPackageData(uint64_t ppa) {
-  return childs[0]->readPackageData(ppa);
-}
-
-void Plane::writePackageData(uint64_t ppa, PackageData pkgData) {
-  childs[0]->writePackageData(ppa, pkgData);
-}
-
-Die::Die(uint32_t id, int numPlanes, int numBlocks, int numPages)
+Plane::Plane(uint32_t id, int num_blocks, int num_pages)
     : PackageComponent(id) {
-  for (int p = 0; p < numPlanes; ++p) {
-    childs.push_back(std::make_unique<Plane>(p, numBlocks, numPages));
+  for (int b = 0; b < num_blocks; ++b) {
+    childs.push_back(std::make_unique<Block>(b, num_pages));
   }
 }
 
-PackageData Die::readPackageData(uint64_t ppa) {
-  return childs[0]->readPackageData(ppa);
+PageData Plane::ReadPage(uint64_t ppa) { return childs[0]->ReadPage(ppa); }
+
+void Plane::WritePage(uint64_t ppa, PageData page_data) {
+  childs[0]->WritePage(ppa, page_data);
 }
 
-void Die::writePackageData(uint64_t ppa, PackageData pkgData) {
-  childs[0]->writePackageData(ppa, pkgData);
-}
-
-Package::Package(uint32_t id, int numDies, int numPlanes, int numBlocks,
-                 int numPages)
+Die::Die(uint32_t id, int num_planes, int num_blocks, int num_pages)
     : PackageComponent(id) {
-  for (int d = 0; d < numDies; ++d) {
-    childs.push_back(std::make_unique<Die>(d, numPlanes, numBlocks, numPages));
+  for (int p = 0; p < num_planes; ++p) {
+    childs.push_back(std::make_unique<Plane>(p, num_blocks, num_pages));
   }
 }
 
-PackageData Package::readPackageData(uint64_t ppa) {
-  return childs[0]->readPackageData(ppa);
+PageData Die::ReadPage(uint64_t ppa) { return childs[0]->ReadPage(ppa); }
+
+void Die::WritePage(uint64_t ppa, PageData page_data) {
+  childs[0]->WritePage(ppa, page_data);
 }
 
-void Package::writePackageData(uint64_t ppa, PackageData pkgData) {
-  childs[0]->writePackageData(ppa, pkgData);
+Package::Package(uint32_t id, int num_dies, int num_planes, int num_blocks,
+                 int num_pages)
+    : PackageComponent(id) {
+  for (int d = 0; d < num_dies; ++d) {
+    childs.push_back(
+        std::make_unique<Die>(d, num_planes, num_blocks, num_pages));
+  }
 }
 
-FlashMemory::FlashMemory(int numPkgs, int numDies, int numPlanes, int numBlocks,
-                         int numPages) {
-  for (int p = 0; p < numPkgs; ++p) {
-    pkgs.push_back(
-        std::make_unique<Package>(p, numDies, numPlanes, numBlocks, numPages));
+PageData Package::ReadPage(uint64_t ppa) { return childs[0]->ReadPage(ppa); }
+
+void Package::WritePage(uint64_t ppa, PageData page_data) {
+  childs[0]->WritePage(ppa, page_data);
+}
+
+FlashMemory::FlashMemory(int num_pkgs, int num_dies, int num_planes,
+                         int num_blocks, int num_pages) {
+  for (int p = 0; p < num_pkgs; ++p) {
+    pkgs.push_back(std::make_unique<Package>(p, num_dies, num_planes,
+                                             num_blocks, num_pages));
   }
 }
