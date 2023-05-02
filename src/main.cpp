@@ -1,14 +1,25 @@
-#include <memory>
+#include <cxxopts.hpp>
 #include <fmt/format.h>
-#include "nand_flash_memory/Package.h"
+#include <string>
+#include <vector>
 
-int main(void) {
-  fmt::print("I'm main\n");
-  int numPkgs = 4;
-  int numDies = 4;
-  int numPlanes = 4;
-  int numBlocks = 512;
-  int numPages = 2048;
-  auto flashMem = 
-    std::make_unique<FlashMemory>(numPkgs, numDies, numPlanes, numBlocks, numPages);
+int main(int argc, char **argv) {
+  using SSDConfig = std::string;
+  using PreconditioningConfig = std::string;
+  using WorkloadConfigs = std::vector<std::string>;
+
+  cxxopts::Options options("CAOS sim options");
+  options.add_options()
+    ("c,config", "SSD config", cxxopts::value<SSDConfig>())
+    ("w,workload", "Workload configs", cxxopts::value<WorkloadConfigs>())
+    ("p,preconditioning", "Preconditioning config",
+     cxxopts::value<PreconditioningConfig>())
+    ("h,help", "Print usage");
+  auto result = options.parse(argc, argv);
+
+  auto ssd_config = result["config"].as<SSDConfig>();
+  auto pre_config = result["preconditioning"].as<PreconditioningConfig>();
+  auto workload_configs = result["workload"].as<WorkloadConfigs>();
+
+  return 0;
 }
