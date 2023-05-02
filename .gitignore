@@ -33,5 +33,7 @@
 
 # Ignore a directory where sim and test binaries exist
 bin/
+# Ignore a build directory
+build/
 
-*.txt
+*.json
