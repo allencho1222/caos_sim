@@ -9,5 +9,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Build ssdsim binary
 add_subdirectory(src)
+
 # Build test binaries
+set(INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/src)
 add_subdirectory(test)

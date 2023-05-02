@@ -13,7 +13,6 @@ set(SRC_FILES main.cpp)
 
 add_executable(ssdsim ${SRC_FILES})
 
-# target_include_directories(ssdsim)
 target_link_libraries(ssdsim
   nand_flash_memory
   fmt::fmt
